@@ -1,0 +1,32 @@
+pipeline {
+    agent { label 'master' }
+
+    environment {
+        ANSIBLE_HOST_KEY_CHECKING = 'False'
+    }
+
+    stages {
+
+        stage('Clone Code') {
+            steps {
+                git branch: 'main', url: 'https://github.com/abdulshajahan/ansible-web-pipeline.git'
+            }
+        }
+
+        stage('Verify Inventory') {
+            steps {
+                sh '''
+                ansible all -i inventory.ini -m ping
+                '''
+            }
+        }
+
+        stage('Deploy Webserver') {
+            steps {
+                sh '''
+                ansible-playbook -i inventory.ini deploy.yaml
+                '''
+            }
+        }
+    }
+}
