@@ -1,0 +1,21 @@
+- name: Deploy Web Server
+  hosts: web
+  become: yes
+  remote_user: jenkins
+
+  tasks:
+    - name: Install Apache
+      package:
+        name: httpd
+        state: present
+
+    - name: Start Apache
+      service:
+        name: httpd
+        state: started
+        enabled: yes
+
+    - name: Copy website
+      copy:
+        src: index.html
+        dest: /var/www/html/index.html
